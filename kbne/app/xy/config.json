@@ -1,18 +1,20 @@
 {
   "log": {
-    "loglevel": "warning"
+    "loglevel": "warning",
+    "access": "none",
+    "error": ""
   },
   "inbounds": [
     {
-      "listen": null,
+      "listen": "127.0.0.1",
       "port": 8080,
       "protocol": "vless",
       "settings": {
         "clients": [
           {
-            "email": "nginxxray",
-            "flow": "xtls-rprx-vision",
             "id": "UUID" // 注意: 这个UUID会在entrypoint.sh中被替换
+            "email": "user@example.com",
+            "flow": "xtls-rprx-vision"
           }
         ],
         "decryption": "mlkem768x25519plus.native.600s.IASRX3nSekp4w75a13lfrUlfcPkigvk39yETGzU3gHc",
@@ -23,22 +25,40 @@
         "network": "xhttp",
         "security": "none",
         "xhttpSettings": {
-          "headers": {},
-          "host": "",
-          "mode": "auto",
-          "noSSEHeader": false,
           "path": "/b3a053a4",
-          "scMaxBufferedPosts": 30,
-          "scMaxEachPostBytes": "1000000",
-          "scStreamUpServerSecs": "20-80",
-          "xPaddingBytes": "100-1000"
+          "mode": "auto"
         }
-      }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": ["http", "tls", "fakedns"]
+      },
+      "tag": "vless-inbound"
     }
   ],
   "outbounds": [
     {
-      "protocol": "freedom"
+      "protocol": "freedom",
+      "tag": "direct"
+    },
+    {
+      "protocol": "blackhole",
+      "tag": "blocked"
     }
-  ]
+  ],
+  "routing": {
+    "domainStrategy": "AsIs",
+    "rules": [
+      {
+        "type": "field",
+        "ip": ["geoip:private"],
+        "outboundTag": "blocked"
+      },
+      {
+        "type": "field",
+        "protocol": ["bittorrent"],
+        "outboundTag": "blocked"
+      }
+    ]
+  }
 }
