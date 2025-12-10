@@ -19,19 +19,13 @@
         "selectedAuth": "X25519, not Post-Quantum"
       },
       "streamSettings": {
-        "network": "ws",
-        "wsSettings": {
+        "network": "xhttp",
+        "security": "none",
+        "xhttpSettings": {
           "host": "",
+          "mode": "auto",
           "path": "PROXY_PATH_PLACEHOLDER" // 注意: 这个path会在entrypoint.sh中被替换
-        },
-        "security": "none"
-      },
-      "sniffing": {
-        "enabled": true,
-        "destOverride": [
-          "http",
-          "tls"
-        ]
+        }
       }
     }
   ],
